@@ -6,10 +6,10 @@ import PropTypes from "prop-types"
 import TodoForm from "../components/TodoForm"
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />
 })
 
-const Modal = ({title, isOpen, onClose, ...props}) => {
+const Modal = ({title, isOpen, onClose, onConfirm = null, ...props}) => {
   return (
     <Dialog
       open={isOpen}
@@ -22,7 +22,8 @@ const Modal = ({title, isOpen, onClose, ...props}) => {
         {props.children}
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={onClose}>Cancel</Button>
+        <Button color="info" onClick={onClose}>Cancel</Button>
+        { onConfirm && <Button color="error" onClick={onConfirm}>Confirm</Button> }
       </DialogActions>
     </Dialog>
   )
@@ -31,7 +32,8 @@ const Modal = ({title, isOpen, onClose, ...props}) => {
 TodoForm.propTypes = {
   title: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func
 }
 
 export default Modal

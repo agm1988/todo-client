@@ -4,8 +4,12 @@ import Button from "@mui/material/Button"
 import { Box, Typography } from "@mui/material"
 import { Send } from "@mui/icons-material"
 import TodoItem from "./TodoItem"
+import CustomPagination from "../CustomPagination/CustomPagination"
+import { usePage } from "../../context/PageContext"
 
-const TodosList = ({todos, handleEdit, handleDelete}) => {
+const TodosList = ({todos, totalAmount, handleEdit, handleDelete}) => {
+  const { page, setPage } = usePage();
+
   return (
     <Fragment>
       <Box sx={{ width: '100%', maxWidth: 500 }}>
@@ -22,7 +26,7 @@ const TodosList = ({todos, handleEdit, handleDelete}) => {
         New Todo
       </Button>
       {
-        todos.length === 0 ? <div>No Todos</div> : (
+        todos.length === 0 ? <Typography variant="h5">No Todos</Typography> : (
           todos.map(todo => (
             <TodoItem
               key={todo.id}
@@ -33,6 +37,11 @@ const TodosList = ({todos, handleEdit, handleDelete}) => {
           ))
         )
       }
+      <CustomPagination
+        totalAmount={totalAmount}
+        currentPage={page}
+        onPageChange={setPage}
+      />
     </Fragment>
   )
 }
@@ -44,6 +53,7 @@ TodosList.propTypes = {
     description: PropTypes.string,
     status: PropTypes.string
   })),
+  totalAmount: PropTypes.number.isRequired,
   handleEdit: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired
 }

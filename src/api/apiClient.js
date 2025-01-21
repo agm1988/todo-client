@@ -11,7 +11,7 @@ const apiClient = axios.create({
 const VERSIONED_API_URL = `/api/${API_VERSION}`
 
 // API request functions
-export const fetchTodos = () => apiClient.get(`${VERSIONED_API_URL}/todos`)
+export const fetchTodos = (params) => apiClient.get(`${VERSIONED_API_URL}/todos`, { params })
 export const createTodo = (data) => apiClient.post(`${VERSIONED_API_URL}/todos`, data)
 export const updateTodo = (id, data) => apiClient.patch(`${VERSIONED_API_URL}/todos/${id}`, data)
 export const deleteTodo = (id) => apiClient.delete(`${VERSIONED_API_URL}/todos/${id}`)

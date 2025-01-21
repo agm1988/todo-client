@@ -1,7 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useFormik } from "formik"
-import * as Yup from "yup"
 import InputField from "./InputField"
 import Button from "@mui/material/Button"
 import { initialTodo } from "../constants"

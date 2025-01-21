@@ -28,7 +28,7 @@ InputField.propTypes = {
   error: PropTypes.string,
   required: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired
+  onBlur: PropTypes.func
 }
 
 export default InputField

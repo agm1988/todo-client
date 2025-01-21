@@ -9,6 +9,8 @@ export const initialTodo = {
   status: PENDING_TODO
 }
 
+export const PER_PAGE = 5
+
 export const COLORS = {
   primary: "#1976d2",
   secondary: "#ff4081",

@@ -38,7 +38,7 @@ const TodoItem = ({todo, handleEdit, handleDelete}) => {
           <Create />
         </IconButton>
         <IconButton
-          onClick={() => handleDelete(todo.id)}
+          onClick={() => handleDelete(todo)}
           aria-label="share">
           <DeleteTwoTone />
         </IconButton>
