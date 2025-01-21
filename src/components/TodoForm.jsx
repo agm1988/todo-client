@@ -9,16 +9,12 @@ import { parseError } from "../lib/utils/common"
 import SelectField from "./SelectField"
 import { TODO_STATUSES } from "../dictionaries/todoDict"
 import { TODO_STATUSES_MAPPING } from "../mappings/todoMapping"
+import { todoValidationSchema } from "../schemas/todoSchema";
 
 const TodoForm = ({ initialValues, onSubmit }) => {
-  const validationSchema = Yup.object({
-    title: Yup.string().required("Title is required"),
-    description: Yup.string().max(500, "Description must be under 500 characters"),
-  })
-
   const formik = useFormik({
     initialValues: initialValues || initialTodo,
-    validationSchema,
+    validationSchema: todoValidationSchema,
     onSubmit: async (values, { setErrors, setStatus }) => {
       try {
         // Call the parent's onSubmit function
@@ -36,6 +32,7 @@ const TodoForm = ({ initialValues, onSubmit }) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <InputField
+        id="todoTitle"
         label="Title"
         name="title"
         value={formik.values.title}
@@ -46,6 +43,7 @@ const TodoForm = ({ initialValues, onSubmit }) => {
       />
 
       <InputField
+        id="todoDescription"
         label="Description"
         name="description"
         value={formik.values.description}
@@ -58,6 +56,7 @@ const TodoForm = ({ initialValues, onSubmit }) => {
       />
 
       <SelectField
+        id="todoStatus"
         label="Status"
         name="status"
         value={formik.values.status}
