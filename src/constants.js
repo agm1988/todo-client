@@ -1,6 +1,7 @@
 import { PENDING_TODO } from "./dictionaries/todoDict";
 
-export const API_URL = "http://localhost:3000"; // Rails API URL
+// export const API_URL = "http://localhost:3000"; // Rails API URL
+export const API_URL = process.env.REACT_APP_API_URL // Rails API URL
 export const API_VERSION = "v1"; // Rails API Version
 
 export const initialTodo = {
