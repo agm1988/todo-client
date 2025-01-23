@@ -1,29 +1,30 @@
-import React from "react"
-import { Container, Typography } from "@mui/material"
-import TodosList from "../components/Todo/TodosList"
-import TodoForm from "../components/TodoForm"
-import CustomModal from "../modals/CustomModal"
-import LoadingOverlay from "../components/LoadingOverlay"
-import useAsync from "../hooks/useAsync"
-import { useQuery } from "../context/QueryContext"
-import { useStatus } from "../context/StatusContext"
-import { usePage } from "../context/PageContext"
-import { useTodos } from "../hooks/useTodos"
-import { useModal } from "../hooks/useModal"
+import React from "react";
+import { Container, Typography } from "@mui/material";
+import TodosList from "../components/Todo/TodosList";
+import TodoForm from "../components/TodoForm";
+import CustomModal from "../modals/CustomModal";
+import LoadingOverlay from "../components/LoadingOverlay";
+import useAsync from "../hooks/useAsync";
+import { useQuery } from "../context/QueryContext";
+import { useStatus } from "../context/StatusContext";
+import { usePage } from "../context/PageContext";
+import { useTodos } from "../hooks/useTodos";
+import { useModal } from "../hooks/useModal";
 
 const TodoList = () => {
-  const { query } = useQuery()
-  const { status } = useStatus()
-  const { page } = usePage()
+  const { query } = useQuery();
+  const { status } = useStatus();
+  const { page } = usePage();
 
   const {
     todos,
     totalAmount,
+    onLoading, // Unified loading state
     handleFetchTodos,
     handleDelete,
     handleUpdate,
     handleCreate,
-  } = useTodos(query, status, page)
+  } = useTodos(query, status, page);
 
   const {
     modalOpen,
@@ -33,17 +34,15 @@ const TodoList = () => {
     openEditModal,
     closeModal,
     openDeleteModal,
-  } = useModal()
+  } = useModal();
 
-  const { loading } = useAsync(handleFetchTodos, [query, status, page])
+  useAsync(handleFetchTodos, [query, status, page]);
 
   const handleFormSubmit = async (payload) => {
-    if (payload.id) {
-      handleUpdate(payload)
-    } else {
-      handleCreate(payload)
-    }
-    closeModal()
+
+    const requestObj = payload.id ? handleUpdate(payload) : handleCreate(payload)
+
+    return requestObj.then(() => closeModal())
   }
 
   const handleDeleteConfirm = () => {
@@ -57,7 +56,8 @@ const TodoList = () => {
       component="main"
       sx={{ display: "flex", flexDirection: "column", my: 16, gap: 4 }}
     >
-      <LoadingOverlay loading={loading} />
+      {/* Show the overlay during any operation */}
+      <LoadingOverlay loading={onLoading} />
 
       <TodosList
         todos={todos}
@@ -93,4 +93,4 @@ const TodoList = () => {
   );
 };
 
-export default TodoList
+export default TodoList;
