@@ -11,7 +11,7 @@ import PropTypes from "prop-types"
 const SearchBar = ({ statuses }) => {
   // Local state for the form
   const [localQuery, setLocalQuery] = useState('')
-  const [localStatus, setLocalStatus] = useState('')
+  const [localStatus, setLocalStatus] = useState(' ')
 
   const { setQuery } = useQuery()
   const { setStatus } = useStatus()
@@ -29,7 +29,7 @@ const SearchBar = ({ statuses }) => {
   const handleReset = (event) => {
     event.preventDefault()
     setLocalQuery('')
-    setLocalStatus('')
+    setLocalStatus(' ')
 
     setQuery('')
     setStatus('')

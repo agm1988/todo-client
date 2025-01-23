@@ -26,6 +26,7 @@ function App() {
             <SearchBar
               statuses={searchStatusesDict}
             />
+            {console.log(searchStatusesDict)}
             <TodoList />
           </Container>
         </PageProvider>
