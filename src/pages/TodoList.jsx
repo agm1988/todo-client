@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from "react"
 import { fetchTodos, deleteTodo, updateTodo, createTodo } from "../api/apiClient"
 import TodosList from "../components/Todo/TodosList"
-import {Box, CircularProgress, Container, LinearProgress, Paper, Stack, Typography} from "@mui/material"
+import { Container, Typography} from "@mui/material"
 import TodoForm from "../components/TodoForm"
 import Modal from "../modals/Modal"
 import { useQuery } from "../context/QueryContext"
@@ -9,14 +9,15 @@ import { useStatus } from "../context/StatusContext"
 import { usePage } from "../context/PageContext"
 import { prepareSearchParams } from "../lib/utils/common"
 import useAsync from "../hooks/useAsync";
-import LoadingOverlay from "../components/LoadingOverlay";
+import LoadingOverlay from "../components/LoadingOverlay"
+import useToggle from "../hooks/useTodos"
 
 const TodoList = () => {
   const [todos, setTodos] = useState([])
   const [totalAmount, setTotalAmount] = useState(0)
   const [editingTodo, setEditingTodo] = useState(null)
   const [deletingTodo, setDeletingTodo] = useState(null)
-  const [isOpen, setIsOpen] = useState(false)
+  const [modalOpen, toggleModalOpen] = useToggle(false)
 
   const { query } = useQuery()
   const { status } = useStatus()
@@ -34,13 +35,11 @@ const TodoList = () => {
       })
   }
 
+  // TODO: show exceptions
   const { loading, error, value } = useAsync(handleFetchTodos,
     [query, status, page]
   )
 
-  const toggleModal = () => {
-    setIsOpen(!isOpen)
-  }
 
   const handleDelete = (id) => {
     setDeletingTodo(null)
@@ -51,7 +50,7 @@ const TodoList = () => {
 
   const handleEdit = (todo) => {
     setEditingTodo(todo)
-    toggleModal()
+    toggleModalOpen()
   }
 
   const onUpdateSuccess = (updatedTodo) => {
@@ -73,7 +72,7 @@ const TodoList = () => {
         .then(() => setTotalAmount(totalAmount + 1))
     )
 
-    return requestObj.then(() => toggleModal())
+    return requestObj.then(() => toggleModalOpen())
   }
 
   return (
@@ -92,8 +91,8 @@ const TodoList = () => {
         />
 
         <Modal
-          isOpen={isOpen}
-          onClose={toggleModal}
+          isOpen={modalOpen}
+          onClose={toggleModalOpen}
           todo={editingTodo}
           onSubmit={(values) => handleFormSubmit(values)}
           title={editingTodo?.id ? 'Edit Todo' : 'Create New Todo'}>
