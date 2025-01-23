@@ -1,9 +1,8 @@
-import React, {Fragment, useEffect, useState} from "react"
+import React, { useState} from "react"
 import { fetchTodos, deleteTodo, updateTodo, createTodo } from "../api/apiClient"
 import TodosList from "../components/Todo/TodosList"
-import { Container, Typography} from "@mui/material"
+import { Container, Typography } from "@mui/material"
 import TodoForm from "../components/TodoForm"
-import Modal from "../modals/Modal"
 import { useQuery } from "../context/QueryContext"
 import { useStatus } from "../context/StatusContext"
 import { usePage } from "../context/PageContext"
@@ -11,6 +10,7 @@ import { prepareSearchParams } from "../lib/utils/common"
 import useAsync from "../hooks/useAsync";
 import LoadingOverlay from "../components/LoadingOverlay"
 import useToggle from "../hooks/useTodos"
+import CustomModal from "../modals/CustomModal"
 
 const TodoList = () => {
   const [todos, setTodos] = useState([])
@@ -90,26 +90,29 @@ const TodoList = () => {
           handleDelete={setDeletingTodo}
         />
 
-        <Modal
-          isOpen={modalOpen}
-          onClose={toggleModalOpen}
-          todo={editingTodo}
-          onSubmit={(values) => handleFormSubmit(values)}
-          title={editingTodo?.id ? 'Edit Todo' : 'Create New Todo'}>
-          <TodoForm
-            initialValues={editingTodo}
-            onSubmit={(values) => handleFormSubmit(values)}
-          />
-        {/*  TODO: Refactor confirm now it's shitty */}
-        </Modal>
-          { !!deletingTodo && (<Modal
-          isOpen={!!deletingTodo}
-          onClose={() => {setDeletingTodo(null)}}
-          todo={editingTodo}
-          onConfirm={() => handleDelete(deletingTodo.id)}
-          title="Deleting Todo">
-          <Typography>{`Are you sure you want to delete "${deletingTodo?.title}" item?`}</Typography>
-        </Modal>) }
+        {/*/!*  TODO: Refactor confirm now it's shitty *!/*/}
+        {/*/!*  Complex code just to show that modal component is reusable and one modal is rendered :) *!/*/}
+        {/*/!*  See previous commits for earlier versions *!/*/}
+        <CustomModal
+          isOpen={modalOpen || !!deletingTodo}
+          onClose={
+            deletingTodo ? () => {setDeletingTodo(null)} : toggleModalOpen
+          }
+          title={`${(deletingTodo && 'Deleting Todo') || (editingTodo?.id ? 'Edit Todo' : 'Create New Todo')}`}
+          onConfirm={deletingTodo ? () => handleDelete(deletingTodo.id) : null}
+        >
+          {
+            deletingTodo ? (
+              <Typography>
+                {`Are you sure you want to delete "${deletingTodo?.title}" item?`}
+              </Typography>
+            ) : (
+              <TodoForm
+                initialValues={editingTodo}
+                onSubmit={(values) => handleFormSubmit(values)}
+              />)
+          }
+        </CustomModal>
     </Container>
   )
 }
