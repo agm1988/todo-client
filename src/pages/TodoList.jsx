@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react"
+import React, {Fragment, useEffect, useState} from "react"
 import { fetchTodos, deleteTodo, updateTodo, createTodo } from "../api/apiClient"
 import TodosList from "../components/Todo/TodosList"
-import { Container, Typography } from "@mui/material"
+import {Box, CircularProgress, Container, LinearProgress, Paper, Stack, Typography} from "@mui/material"
 import TodoForm from "../components/TodoForm"
 import Modal from "../modals/Modal"
 import { useQuery } from "../context/QueryContext"
 import { useStatus } from "../context/StatusContext"
 import { usePage } from "../context/PageContext"
 import { prepareSearchParams } from "../lib/utils/common"
+import useAsync from "../hooks/useAsync";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([])
@@ -20,15 +22,21 @@ const TodoList = () => {
   const { status } = useStatus()
   const { page } = usePage()
 
-  useEffect(() => {
+  const handleFetchTodos = () => {
     const params = prepareSearchParams(query, status, page)
-    fetchTodos(params)
+
+    return fetchTodos(params)
       .then((response) => {
         setTodos(response.data.data)
         setTotalAmount(response.data.total_amount)
+
+        return response
       })
-      .catch((error) => console.error("Error fetching todos:", error));
-  }, [query, status, page])
+  }
+
+  const { loading, error, value } = useAsync(handleFetchTodos,
+    [query, status, page]
+  )
 
   const toggleModal = () => {
     setIsOpen(!isOpen)
@@ -74,33 +82,35 @@ const TodoList = () => {
         component="main"
         sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
       >
-      <TodosList
-        todos={todos}
-        totalAmount={totalAmount}
-        handleEdit={handleEdit}
-        handleDelete={setDeletingTodo}
-      />
+        <LoadingOverlay loading={loading} />
 
-      <Modal
-        isOpen={isOpen}
-        onClose={toggleModal}
-        todo={editingTodo}
-        onSubmit={(values) => handleFormSubmit(values)}
-        title={editingTodo?.id ? 'Edit Todo' : 'Create New Todo'}>
-        <TodoForm
-          initialValues={editingTodo}
-          onSubmit={(values) => handleFormSubmit(values)}
+        <TodosList
+          todos={todos}
+          totalAmount={totalAmount}
+          handleEdit={handleEdit}
+          handleDelete={setDeletingTodo}
         />
-      {/*  TODO: Refactor confirm now it's shitty */}
-      </Modal>
-        { !!deletingTodo && (<Modal
-        isOpen={!!deletingTodo}
-        onClose={() => {setDeletingTodo(null)}}
-        todo={editingTodo}
-        onConfirm={() => handleDelete(deletingTodo.id)}
-        title="Deleting Todo">
-        <Typography>{`Are you sure you want to delete "${deletingTodo?.title}" item?`}</Typography>
-      </Modal>) }
+
+        <Modal
+          isOpen={isOpen}
+          onClose={toggleModal}
+          todo={editingTodo}
+          onSubmit={(values) => handleFormSubmit(values)}
+          title={editingTodo?.id ? 'Edit Todo' : 'Create New Todo'}>
+          <TodoForm
+            initialValues={editingTodo}
+            onSubmit={(values) => handleFormSubmit(values)}
+          />
+        {/*  TODO: Refactor confirm now it's shitty */}
+        </Modal>
+          { !!deletingTodo && (<Modal
+          isOpen={!!deletingTodo}
+          onClose={() => {setDeletingTodo(null)}}
+          todo={editingTodo}
+          onConfirm={() => handleDelete(deletingTodo.id)}
+          title="Deleting Todo">
+          <Typography>{`Are you sure you want to delete "${deletingTodo?.title}" item?`}</Typography>
+        </Modal>) }
     </Container>
   )
 }
