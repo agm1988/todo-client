@@ -41,7 +41,7 @@ const SearchBar = ({ statuses }) => {
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={4}>
           <SearchInput
-            label="Search by Title"
+            label="Search"
             name="query"
             value={localQuery}
             onChange={setLocalQuery}

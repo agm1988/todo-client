@@ -1,1 +1,1 @@
-window.REACT_APP_API_URL = "localhost:3000"
+window.REACT_APP_API_URL = "http://localhost:3000"

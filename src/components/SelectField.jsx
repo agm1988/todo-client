@@ -15,6 +15,7 @@ const SelectField = ({ label, name, value, onChange, onBlur, error, helperText, 
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        label={label}
         {...props}
       >
         {options.map((option) => (
